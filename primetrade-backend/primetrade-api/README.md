@@ -81,6 +81,7 @@ cp .env.example .env
 # Edit .env with your PostgreSQL credentials
 
 # 4. Start PostgreSQL and create DB
+psql -U postgres -c "CREATE DATABASE primetrade_db;"
 
 # 5. Run the server (tables auto-created on startup)
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000

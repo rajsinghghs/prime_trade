@@ -11,9 +11,7 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
 
     # Database
-    DATABASE_URL: str = "postgresql://neondb_owner:npg_CgdMV8tX2FBh@ep-orange-queen-aqkubo0i.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require"
-
-    # JWT
+    DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/primetrade_db"
     SECRET_KEY: str = "sfjkhjkshfjkhsfklhsfklhfjhsfl63f34f54f4f"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
