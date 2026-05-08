@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrimeTrade — Task Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ─── AUTH SCREEN ─────────────────────────────────────────────────────────── -->
+<div id="auth-screen" class="screen active">
+  <div class="auth-bg">
+    <div class="grid-lines"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <div class="auth-container">
+    <div class="auth-brand">
+      <div class="brand-mark">PT</div>
+      <h1 class="brand-name">PrimeTrade<span class="dot">.</span></h1>
+      <p class="brand-sub">Task Intelligence Platform</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="tab-switcher">
+        <button class="tab-btn active" data-tab="login">Sign In</button>
+        <button class="tab-btn" data-tab="register">Register</button>
+        <div class="tab-indicator"></div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form active" autocomplete="on">
+        <div class="field-group">
+          <label class="field-label" for="login-email">Email Address</label>
+          <div class="field-wrap">
+            <input type="email" id="login-email" name="email" placeholder="you@example.com" required autocomplete="email" />
+            <span class="field-icon">◈</span>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="login-password">Password</label>
+          <div class="field-wrap">
+            <input type="password" id="login-password" name="password" placeholder="••••••••" required autocomplete="current-password" />
+            <button type="button" class="toggle-pw" aria-label="Toggle password">◉</button>
+          </div>
+        </div>
+        <div id="login-error" class="form-message error hidden"></div>
+        <button type="submit" class="btn-primary" id="login-btn">
+          <span class="btn-text">Sign In</span>
+          <span class="btn-loader hidden">⟳</span>
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form" autocomplete="on">
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label" for="reg-username">Username</label>
+            <div class="field-wrap">
+              <input type="text" id="reg-username" name="username" placeholder="johndoe" required autocomplete="username" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="reg-fullname">Full Name</label>
+            <div class="field-wrap">
+              <input type="text" id="reg-fullname" name="full_name" placeholder="John Doe" autocomplete="name" />
+            </div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="reg-email">Email Address</label>
+          <div class="field-wrap">
+            <input type="email" id="reg-email" name="email" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="reg-password">Password</label>
+          <div class="field-wrap">
+            <input type="password" id="reg-password" name="password" placeholder="Min 8 chars, upper, lower, digit, symbol" required autocomplete="new-password" />
+            <button type="button" class="toggle-pw" aria-label="Toggle password">◉</button>
+          </div>
+          <div class="pw-strength-bar"><div class="pw-strength-fill" id="pw-strength-fill"></div></div>
+          <p class="pw-hint" id="pw-hint"></p>
+        </div>
+        <div id="register-error" class="form-message error hidden"></div>
+        <div id="register-success" class="form-message success hidden"></div>
+        <button type="submit" class="btn-primary" id="register-btn">
+          <span class="btn-text">Create Account</span>
+          <span class="btn-loader hidden">⟳</span>
+        </button>
+      </form>
+    </div>
+
+    <p class="auth-footer">
+      API running at <code class="mono">localhost:8000</code> ·
+      <a href="http://localhost:8000/docs" target="_blank" class="doc-link">Swagger Docs ↗</a>
+    </p>
+  </div>
+</div>
+
+<!-- ─── DASHBOARD SCREEN ────────────────────────────────────────────────────── -->
+<div id="dashboard-screen" class="screen">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark sm">PT</div>
+      <span class="brand-name sm">PrimeTrade</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-view="tasks">
+        <span class="nav-icon">◧</span> Tasks
+      </a>
+      <a href="#" class="nav-item" id="admin-nav-item" data-view="admin" style="display:none">
+        <span class="nav-icon">⬡</span> Admin
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-chip" id="sidebar-user">
+        <div class="user-avatar" id="user-avatar-text">?</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebar-username">Loading...</span>
+          <span class="user-role" id="sidebar-role">user</span>
+        </div>
+      </div>
+      <button class="btn-logout" id="logout-btn" title="Sign out">⏻</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Tasks View -->
+    <div id="tasks-view" class="view active">
+      <header class="view-header">
+        <div>
+          <h2 class="view-title">Task Board</h2>
+          <p class="view-sub" id="task-count-label">Loading tasks...</p>
+        </div>
+        <div class="header-actions">
+          <div class="filter-wrap">
+            <select id="filter-status" class="filter-select">
+              <option value="">All Status</option>
+              <option value="todo">To Do</option>
+              <option value="in_progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+            <select id="filter-priority" class="filter-select">
+              <option value="">All Priority</option>
+              <option value="critical">Critical</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <button class="btn-add" id="open-create-task">
+            <span>+</span> New Task
+          </button>
+        </div>
+      </header>
+
+      <div id="tasks-grid" class="tasks-grid">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Fetching tasks...</p>
+        </div>
+      </div>
+
+      <div class="pagination" id="pagination" style="display:none">
+        <button class="pg-btn" id="pg-prev">←</button>
+        <span class="pg-info" id="pg-info">Page 1</span>
+        <button class="pg-btn" id="pg-next">→</button>
+      </div>
+    </div>
+
+    <!-- Admin View -->
+    <div id="admin-view" class="view">
+      <header class="view-header">
+        <div>
+          <h2 class="view-title">User Management</h2>
+          <p class="view-sub">Admin-only zone</p>
+        </div>
+        <button class="btn-add" id="refresh-users-btn">↻ Refresh</button>
+      </header>
+      <div id="users-table-wrap">
+        <div class="loading-state"><div class="spinner"></div><p>Loading users...</p></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ─── TASK MODAL ───────────────────────────────────────────────────────────── -->
+<div id="task-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modal-title">New Task</h3>
+      <button class="modal-close" id="close-modal">✕</button>
+    </div>
+    <form id="task-form" class="modal-form">
+      <input type="hidden" id="task-id" />
+      <div class="field-group">
+        <label class="field-label" for="task-title">Title *</label>
+        <input type="text" id="task-title" placeholder="What needs to be done?" required maxlength="200" />
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="task-description">Description</label>
+        <textarea id="task-description" placeholder="Add details..." rows="3"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label" for="task-status">Status</label>
+          <select id="task-status">
+            <option value="todo">To Do</option>
+            <option value="in_progress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="task-priority">Priority</label>
+          <select id="task-priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="task-due">Due Date</label>
+        <input type="datetime-local" id="task-due" />
+      </div>
+      <div id="task-form-error" class="form-message error hidden"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="cancel-modal">Cancel</button>
+        <button type="submit" class="btn-primary sm" id="save-task-btn">
+          <span class="btn-text">Save Task</span>
+          <span class="btn-loader hidden">⟳</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ─── TOAST ─────────────────────────────────────────────────────────────────── -->
+<div id="toast-container" class="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
